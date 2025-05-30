@@ -2,8 +2,9 @@ import osmnx as ox
 
 # 抓取所有 amenity 或 tourism 地點：例如 museum、viewpoint、hotel
 tags = {
-    'tourism': True  # 可以改成 {"tourism": ["museum", "viewpoint", "hotel"]} 精確過濾
+    "tourism": ["museum", "viewpoint", "zoo", "attraction"]  # 不包含 hotel
 }
+
 gdf = ox.features_from_place("Taipei, Taiwan", tags=tags)
 
 

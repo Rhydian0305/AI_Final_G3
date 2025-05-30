@@ -1,13 +1,12 @@
 import osmnx as ox
 import pickle
 
-# 抓取台北市的街道網路（以行人路網為例）
 print("📦 正在下載台北市路網...")
 G = ox.graph_from_place("Taipei, Taiwan", network_type='walk')
 
-# 將資料轉換成 GeoDataFrame（取得每條邊的幾何座標與距離）
 print("📐 正在轉換為 geometry...")
 custom_edges = []
+
 for u, v, k, data in G.edges(keys=True, data=True):
     if 'geometry' in data:
         coords = list(data['geometry'].coords)
@@ -16,6 +15,8 @@ for u, v, k, data in G.edges(keys=True, data=True):
             (G.nodes[u]['y'], G.nodes[u]['x']),
             (G.nodes[v]['y'], G.nodes[v]['x'])
         ]
+
+    # 原向邊
     custom_edges.append({
         "u": u,
         "v": v,
@@ -23,7 +24,15 @@ for u, v, k, data in G.edges(keys=True, data=True):
         "distance": data.get("length", 1)
     })
 
-# 儲存為 .pkl 檔
+    # 反向邊（加 reversed()）
+    custom_edges.append({
+        "u": v,
+        "v": u,
+        "geometry": list(reversed(coords)),
+        "distance": data.get("length", 1)
+    })
+
+# 儲存成 graph.pkl
 with open("graph.pkl", "wb") as f:
     pickle.dump(custom_edges, f)
 
