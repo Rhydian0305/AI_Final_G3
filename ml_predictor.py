@@ -11,7 +11,7 @@ ALL_TOURISM_TYPES = [
 def predict_best_route(user_id, alpha, gamma, candidate_paths, candidate_costs, tourism_weights={}):
     model_path = f"models/model_{user_id}.pkl"
     if not os.path.exists(model_path):
-        print("⚠️ 無個人模型，使用預設規則選擇最短成本路線")
+        print("無個人模型，使用預設規則選擇最短成本路線")
         return candidate_costs.index(min(candidate_costs))
 
     with open(model_path, "rb") as f:
