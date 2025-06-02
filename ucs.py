@@ -42,6 +42,6 @@ if __name__ == "__main__":
     start = 25423587
     end = 618955584  # 隨便選一組在你的資料裡存在的
     path, dist, visited = ucs(start, end, graph)
-    print("✅ 路徑節點數：", len(path))
-    print("📏 總距離：", dist)
-    print("🔍 拜訪節點數：", visited)
+    print("路徑節點數：", len(path))
+    print("總距離：", dist)
+    print("拜訪節點數：", visited)

@@ -33,4 +33,4 @@ def generate_realistic_logs(n_per_user=100):
 df_simulated = generate_realistic_logs()
 print(df_simulated.head())  # 顯示驗證內容
 df_simulated.to_csv("user_logs.csv", index=False)
-print("✅ user_logs_simulated.csv 已成功產生！")
+print("user_logs_simulated.csv 已成功產生！")

@@ -2,7 +2,7 @@
 import csv
 import math
 import pickle
-from tqdm import tqdm  # ✅ 加這行
+from tqdm import tqdm 
 
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371000  # 地球半徑（公尺）

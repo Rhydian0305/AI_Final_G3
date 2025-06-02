@@ -58,7 +58,7 @@ def resolve_place_input(prompt):
         return name
     matches = get_close_matches(name, place_names, n=3, cutoff=0.5)
     if matches:
-        print("⚠️ 找不到完全相符的地名，你可能想找：")
+        print("找不到完全相符的地名，你可能想找：")
         for i, m in enumerate(matches):
             print(f"  {i+1}. {m}")
         choice = input("請選擇 1~3 中的一個，請按enter繼續：")
@@ -67,7 +67,7 @@ def resolve_place_input(prompt):
         else:
             return resolve_place_input(prompt)
     else:
-        print("❌ 沒有找到類似地名，請再試一次")
+        print("沒有找到類似地名，請再試一次")
         return resolve_place_input(prompt)
 
 source_name = resolve_place_input("請輸入起點地名（例如：台北車站）：")
@@ -112,7 +112,7 @@ folium.Marker(coords_list[0], popup="起點", icon=folium.Icon(color='green')).a
 folium.Marker(coords_list[-1], popup="終點", icon=folium.Icon(color='red')).add_to(m)
 m.save("route_map.html")
 webbrowser.open_new_tab(os.path.abspath("route_map.html"))
-print("✅ 地圖已儲存並打開 route_map.html")
+print("地圖已儲存並打開 route_map.html")
 
 # ===== 使用者回饋紀錄 =====
 def log_user_choice(filename, user_id, source, target, alpha, beta, gamma, path, cost, feedback, duration):
@@ -139,4 +139,4 @@ log_user_choice(
     feedback, duration
 )
 
-print("✅ 已記錄使用者回饋與偏好")
+print("已記錄使用者回饋與偏好")

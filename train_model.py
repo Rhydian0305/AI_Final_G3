@@ -26,4 +26,4 @@ for uid, group in df.groupby("user_id"):
     with open(f"models/model_{uid}.pkl", "wb") as f:
         pickle.dump(model, f)
 
-print(f"✅ 已完成訓練 {len(user_models)} 個使用者模型")
+print(f"已完成訓練 {len(user_models)} 個使用者模型")

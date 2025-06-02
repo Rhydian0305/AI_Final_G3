@@ -21,4 +21,4 @@ for edge in graph:
 df = pd.DataFrame(edges_data)
 df.to_csv("edges.csv", index=False)
 
-print("✅ 已產出 edges.csv，格式：start,end,distance（含雙向邊）")
+print("已產出 edges.csv，格式：start,end,distance（含雙向邊）")
