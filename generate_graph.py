@@ -8,6 +8,7 @@ print("📐 正在轉換為 geometry...")
 custom_edges = []
 
 for u, v, k, data in G.edges(keys=True, data=True):
+    
     if 'geometry' in data:
         coords = list(data['geometry'].coords)
     else:
@@ -30,6 +31,7 @@ for u, v, k, data in G.edges(keys=True, data=True):
         "v": u,
         "geometry": list(reversed(coords)),
         "distance": data.get("length", 1)
+        
     })
 
 # 儲存成 graph.pkl
