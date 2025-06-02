@@ -19,7 +19,6 @@ from ml_predictor import predict_best_route
 
 ALL_TOURISM_TYPES = ["viewpoint", "attraction", "museum", "artwork", "theme_park", "zoo"]
 
-# ===== 使用者偏好學習（限定使用者） =====
 def learn_user_preferences(user_id, log_file='user_logs.csv'):
     if not os.path.exists(log_file):
         return 1.0, 0.0, {}
@@ -33,7 +32,6 @@ def learn_user_preferences(user_id, log_file='user_logs.csv'):
         tourism_weights = {}
     return df_user["alpha"].mean(), df_user["gamma"].mean(), tourism_weights
 
-# ===== 使用者輸入偏好參數與 ID =====
 user_id = input("請輸入你的使用者代號：")
 use_auto = input("是否根據過去偏好自動設定係數？(y/n): ").strip().lower()
 if use_auto == 'y':
@@ -53,7 +51,6 @@ else:
             except:
                 pass
 
-# ===== 載入圖資料 =====
 df = pd.read_csv("edges.csv")
 places_df = pd.read_csv("taipei_attractions.csv")
 place_names = places_df["name"].dropna().tolist()
@@ -78,11 +75,10 @@ df["scenic_score"] = scenic_scores
 
 df["has_camera"] = df["has_camera"].astype(int)
 df["weighted_cost"] = df["distance"] * (
-    1 + (alpha * df["has_camera"]) ** 2 - gamma * df["scenic_score"]
+    (1 + alpha * df["has_camera"])**2 - (gamma * df["scenic_score"])**2
 )
 df["weighted_cost"] = df["weighted_cost"].clip(lower=0.01)
 
-# ===== 地點處理 =====
 def resolve_place_input(prompt):
     name = input(prompt)
     if name in place_names:
@@ -101,7 +97,7 @@ def resolve_place_input(prompt):
         print("❌ 沒有找到類似地名，請再試一次")
         return resolve_place_input(prompt)
 
-source_name = resolve_place_input("請輸入起點地名（例如：臺北車站）：")
+source_name = resolve_place_input("請輸入起點地名（例如：臺大笑使館）：")
 target_name = resolve_place_input("請輸入終點地名（例如：臺北101）：")
 source_point = ox.geocoder.geocode(source_name)
 target_point = ox.geocoder.geocode(target_name)
@@ -122,19 +118,16 @@ for u in custom_graph:
 
 coords = {n: (G_osm.nodes[n]['y'], G_osm.nodes[n]['x']) for n in G_osm.nodes}
 
-# ===== K條候選路徑 =====
-def k_shortest_paths(G, source, target, k=3):
+def k_shortest_paths(G, source, target, k=15):
     return list(islice(nx.shortest_simple_paths(G, source, target, weight='weight'), k))
 
-candidate_paths = k_shortest_paths(nxG, source, target, k=3)
+candidate_paths = k_shortest_paths(nxG, source, target, k=15)
 candidate_costs = [sum(nxG[u][v]['weight'] for u, v in zip(p[:-1], p[1:])) for p in candidate_paths]
 
-# ===== 使用個人模型推薦最適路徑 =====
 recommended_idx = predict_best_route(user_id, alpha, gamma, candidate_paths, candidate_costs, tourism_weights)
 shortest_path = candidate_paths[recommended_idx]
 total_cost = candidate_costs[recommended_idx]
 
-# ===== 畫圖並顯示 =====
 coords_list = [(G_osm.nodes[n]['y'], G_osm.nodes[n]['x']) for n in shortest_path if n in G_osm.nodes]
 m = folium.Map(location=coords_list[0], zoom_start=14)
 folium.PolyLine(coords_list, color='blue', weight=5, tooltip="推薦路線").add_to(m)
@@ -144,7 +137,6 @@ m.save("route_map.html")
 webbrowser.open_new_tab(os.path.abspath("route_map.html"))
 print("✅ 地圖已儲存並打開 route_map.html")
 
-# ===== 使用者回饋紀錄 =====
 def log_user_choice(filename, user_id, source, target, alpha, gamma, path, cost, feedback, duration, tourism_weights):
     with open(filename, 'a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
