@@ -1,7 +1,7 @@
 import osmnx as ox
 import pickle
 
-print("正在下載台北市路網...")
+print("📦 正在下載台北市路網...")
 G = ox.graph_from_place("Taipei, Taiwan", network_type='walk')
 
 print("📐 正在轉換為 geometry...")
@@ -38,4 +38,4 @@ for u, v, k, data in G.edges(keys=True, data=True):
 with open("graph.pkl", "wb") as f:
     pickle.dump(custom_edges, f)
 
-print("已成功產生 graph.pkl，可用於地圖與路線搜尋")
+print("✅ 已成功產生 graph.pkl，可用於地圖與路線搜尋")

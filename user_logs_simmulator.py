@@ -2,11 +2,61 @@
 import pandas as pd
 import random  
 import numpy as np
+
 def generate_realistic_logs(n_per_user=100):
     users = {
-        "Tony": {"alpha": 2.0, "beta": 0.0, "gamma": 1.0},   # 喜歡公園安靜（景色高 gamma）
-        "Mary": {"alpha": 0.5, "beta": 0.0, "gamma": 1.0},   # 喜歡風景漂亮（景色高 gamma）
-        "David": {"alpha": 2.0, "beta": 1.0, "gamma": 0.0},  # 討厭市區（camera 多 → alpha 高）
+        "Tony": {
+            "alpha": 0.5,
+            "gamma": 1.0,
+            "tourism_weights": {
+                "viewpoint": 0.9,
+                "attraction": 0.6,
+                "museum": 0.3,
+                "theme_park": 0.2,
+                "zoo": 0.5
+            }
+        },
+        "Mary": {
+            "alpha": 0.3,
+            "gamma": 1.0,
+            "tourism_weights": {
+                "viewpoint": 1.0,
+                "attraction": 0.8,
+                "artwork": 0.6,
+                "museum": 0.2,
+                "theme_park": 0.7
+            }
+        },
+        #David喜歡飆車
+        "David": {
+            "alpha": 2.0,
+            "gamma": 0.0,
+            "tourism_weights": {
+                "viewpoint": 0.0,
+                "attraction": 0.0,
+                "museum": 0.0
+            }
+        },
+        "Lisa": {
+            "alpha": 1.2,
+            "gamma": 0.8,
+            "tourism_weights": {
+                "museum": 1.0,
+                "artwork": 0.9,
+                "attraction": 0.5,
+                "viewpoint": 0.3
+            }
+        },
+        "Eric": {
+            "alpha": 0.8,
+            "gamma": 0.9,
+            "tourism_weights": {
+                "zoo": 1.0,
+                "theme_park": 0.9,
+                "viewpoint": 0.5,
+                "attraction": 0.6
+            }
+        }   
     }
 
     sample_places = ["台北101", "士林夜市", "南港公園", "寧夏夜市", "青年公園苗圃", "南機場夜市", "觀景台"]
@@ -21,16 +71,18 @@ def generate_realistic_logs(n_per_user=100):
             feedback = random.choice([5, 4, 3]) if params["gamma"] > 0.8 or params["alpha"] < 1.0 else random.choice([3, 2, 1])
             records.append([
                 user, src, tgt,
-                params["alpha"], params["beta"], params["gamma"],
-                path, cost, feedback, duration
+                params["alpha"], params["gamma"],
+                path, cost, feedback, duration,
+                str(params["tourism_weights"])
             ])
 
     return pd.DataFrame(records, columns=[
-        "user_id", "source_name", "target_name", "alpha", "beta", "gamma",
-        "chosen_path", "total_cost", "feedback", "duration"
+        "user_id", "source_name", "target_name", "alpha", "gamma",
+        "chosen_path", "total_cost", "feedback", "duration", "tourism_weights"
     ])
+
 
 df_simulated = generate_realistic_logs()
 print(df_simulated.head())  # 顯示驗證內容
 df_simulated.to_csv("user_logs.csv", index=False)
-print("user_logs_simulated.csv 已成功產生！")
+print("✅ user_logs_simulated.csv 已成功產生！")
